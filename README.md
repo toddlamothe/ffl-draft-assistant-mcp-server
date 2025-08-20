@@ -4,241 +4,274 @@ A Python-based Model Context Protocol (MCP) server that provides comprehensive f
 
 ## Overview
 
-This MCP server is designed to be integrated with Claude Desktop, providing real-time access to fantasy football data including injuries, player stats, rankings, and more. It uses a modular architecture with separation of concerns, making it easy to extend with additional data sources and tools for comprehensive fantasy football assistance.
+This MCP server is designed to be integrated with Claude Desktop, providing real-time access to fantasy football data including injuries, player stats, rankings, and more. It uses a modular architecture with separation of concerns, making it easy to extend with additional data sources and tools for comprehensive fantasy football analysis.
 
 ## Tools & Resources Exposed
 
 ### `get_nfl_injuries`
 - **Type**: Tool
 - **Description**: Retrieves the latest NFL injuries data, using cached data if available (refreshed every 24 hours)
-- **Use Case**: Injury analysis for draft decisions and roster management
-- **Returns**: List of team injury reports with player details
-- **Data Structure**: 
-  ```json
-  [
-    {
-      "team": "Team Name",
-      "injuries": [
-        {
-          "player": "Player Name",
-          "position": "Position",
-          "injury": "Injury Description",
-          "status": "Status (Out, Questionable, etc.)",
-          "date": "Date"
-        }
-      ]
-    }
-  ]
-  ```
+- **Returns**: List of injury reports by team with player details, injury status, and dates
+- **Data Source**: ESPN NFL Injuries Page
 
-*More tools and resources will be added as the project evolves, including player rankings, statistics, ADP data, and more.*
+### `get_player_ratings`
+- **Type**: Tool
+- **Description**: Retrieves all player ratings from multiple sources (cached, refreshed every 48 hours)
+- **Returns**: List of player ratings with name, position, team, overall rating, and source
+- **Data Source**: Madden NFL Ratings (EA Sports)
+
+### `get_player_ratings_by_source`
+- **Type**: Tool
+- **Description**: Filters player ratings by specific source (e.g., 'Madden NFL')
+- **Parameters**: `source` (string) - The data source to filter by
+- **Returns**: Filtered list of player ratings from the specified source
+
+### `get_player_ratings_by_position`
+- **Type**: Tool
+- **Description**: Filters player ratings by position (e.g., 'QB', 'RB', 'WR', 'TE', 'K', 'DEF')
+- **Parameters**: `position` (string) - The position to filter by
+- **Returns**: Filtered list of player ratings for the specified position
+
+### `get_player_ratings_by_team`
+- **Type**: Tool
+- **Description**: Filters player ratings by team name
+- **Parameters**: `team` (string) - The team name to filter by
+- **Returns**: Filtered list of player ratings for the specified team
 
 ## Data Sources
 
 ### ESPN NFL Injuries
 - **URL**: https://www.espn.com/nfl/injuries
-- **Frequency**: Scraped on-demand, cached for 24 hours
-- **Data**: Team-by-team injury reports with player details, positions, injury descriptions, and status
-- **Fantasy Impact**: Critical for draft decisions and understanding player availability
+- **Data**: Player injury reports, status, and dates
+- **Cache TTL**: 24 hours
+- **Use Case**: Injury analysis for fantasy football draft decisions
 
-*Additional data sources will be integrated for comprehensive fantasy football analysis.*
+### Madden NFL Ratings (EA Sports)
+- **URL**: https://www.ea.com/games/madden-nfl/ratings
+- **Data**: Player overall ratings, positions, teams
+- **Cache TTL**: 48 hours
+- **Use Case**: Player performance assessment and draft rankings
 
-## Tooling & Architecture Overview
+## Architecture & Tooling
 
 ### Project Structure
 ```
 pigskin-pickem/
 ├── app/
 │   ├── __init__.py
-│   ├── server.py              # FastMCP server entry point
+│   ├── server.py              # FastMCP server with tool definitions
 │   ├── scraper/
 │   │   ├── __init__.py
-│   │   └── nfl_injuries.py    # ESPN scraping logic
+│   │   ├── nfl_injuries.py    # ESPN injuries scraper
+│   │   └── madden_ratings.py  # Madden ratings scraper
 │   ├── cache/
 │   │   ├── __init__.py
-│   │   └── cache.py           # File-based caching system
+│   │   └── cache.py           # Generic caching system
 │   └── resources/
 │       ├── __init__.py
-│       └── nfl_injuries_resource.py  # Resource abstraction layer
+│       ├── nfl_injuries_resource.py
+│       └── player_ratings_resource.py
 ├── tests/
-│   ├── test_scraper.py        # Scraper unit tests
-│   ├── test_cache.py          # Cache unit tests
-│   └── test_resource.py       # Resource unit tests
-├── venv/                      # Python virtual environment
-├── requirements.txt           # Python dependencies
-├── pytest.ini               # Pytest configuration
-├── .gitignore               # Git ignore rules
-└── README.md                # This file
+│   ├── test_scraper.py
+│   ├── test_cache.py
+│   ├── test_resource.py
+│   ├── test_madden_ratings.py
+│   └── test_player_ratings_resource.py
+├── requirements.txt
+├── pytest.ini
+├── .gitignore
+└── README.md
 ```
 
-### Architecture Components
-
-1. **FastMCP Server** (`app/server.py`)
-   - Main MCP server using FastMCP framework
-   - Exposes fantasy football tools for Claude Desktop integration
-   - Handles MCP protocol communication
-
-2. **Scraper Module** (`app/scraper/`)
-   - Modular web scraping logic for multiple data sources
-   - Uses `httpx` for HTTP requests and `beautifulsoup4` for HTML parsing
-   - Designed for easy extension to additional fantasy football data sources
-
-3. **Cache Module** (`app/cache/`)
-   - File-based caching system with configurable TTL
-   - Stores data in `/tmp/pigskin-pickem-cache/` for persistence across sessions
-   - Automatic cache invalidation and refresh
-
-4. **Resource Layer** (`app/resources/`)
-   - Abstraction layer between server and data sources
-   - Handles cache logic and data fetching coordination
-   - Provides clean interface for fantasy football tools
+### Key Components
+- **FastMCP**: Modern MCP server framework for Claude Desktop integration
+- **Modular Scrapers**: Separate modules for each data source with error handling and logging
+- **Caching System**: File-based caching with configurable TTL for each data type
+- **Resource Layer**: Abstraction layer between scrapers and MCP tools
+- **Comprehensive Testing**: Pytest-based tests with mocking for all components
 
 ## Installation & Setup
 
 ### Prerequisites
-- Python 3.10 or later
+- Python 3.8+
 - pip3
+- Virtual environment (recommended)
 
 ### Installation Steps
-
-1. **Clone the repository**
+1. **Clone the repository**:
    ```bash
    git clone <repository-url>
-   cd pigskin-pickem/v5
+   cd pigskin-pickem
    ```
 
-2. **Create and activate virtual environment**
+2. **Create and activate virtual environment**:
    ```bash
    python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install dependencies**
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
 ### Claude Desktop Integration
-
-1. **Locate Claude Desktop config file**
-   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-2. **Add MCP server configuration**
-   ```json
-   {
-     "mcpServers": {
-       "FantasyFootballAssistant": {
-         "command": [
-           "python3",
-           "app/server.py"
-         ],
-         "cwd": "/path/to/your/pigskin-pickem/v5"
-       }
-     }
-   }
-   ```
-
-3. **Restart Claude Desktop**
+Add the following to your `claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "FantasyFootballAssistant": {
+      "command": "/usr/bin/python3",
+      "args": [
+        "app/server.py"
+      ],
+      "cwd": "/path/to/pigskin-pickem"
+    }
+  }
+}
+```
 
 ## Running Tests
 
-### Run all tests
+### Run all tests:
 ```bash
 pytest
 ```
 
-### Run specific test files
+### Run specific test categories:
 ```bash
-pytest tests/test_scraper.py
-pytest tests/test_cache.py
-pytest tests/test_resource.py
+pytest tests/test_scraper.py      # Scraper tests
+pytest tests/test_cache.py        # Cache tests
+pytest tests/test_resource.py     # Resource tests
+pytest tests/test_madden_ratings.py  # Madden ratings tests
 ```
 
-### Test with verbose output
+### Run with verbose output:
 ```bash
 pytest -v
 ```
 
-## Usage
+## Usage Examples
 
-### Manual Server Execution
-```bash
-python3 app/server.py
+### Getting NFL Injuries
+```python
+# Get all current injuries
+injuries = await get_nfl_injuries()
 ```
 
-### Fantasy Football Draft Assistance
-Once integrated with Claude Desktop, you can ask Claude to:
-- "Get the latest NFL injuries for draft analysis"
-- "Show me all injured running backs and their status"
-- "Which teams have the most injuries affecting fantasy-relevant players?"
-- "What's the injury status for [player name] and how does it affect their draft value?"
-- *Future capabilities will include:*
-  - Player rankings and ADP analysis
-  - Statistical projections
-  - Draft strategy recommendations
-  - Team-by-team depth chart analysis
-  - Sleepers and busts identification
+### Getting Player Ratings
+```python
+# Get all player ratings
+ratings = await get_player_ratings()
+
+# Get ratings by position
+qb_ratings = await get_player_ratings_by_position("QB")
+rb_ratings = await get_player_ratings_by_position("RB")
+
+# Get ratings by team
+chiefs_ratings = await get_player_ratings_by_team("Kansas City Chiefs")
+
+# Get ratings by source
+madden_ratings = await get_player_ratings_by_source("Madden NFL")
+```
+
+### Fantasy Football Analysis
+```python
+# Example: Find top QBs by rating
+qb_ratings = await get_player_ratings_by_position("QB")
+top_qbs = sorted(qb_ratings, key=lambda x: x["overall"], reverse=True)[:5]
+
+# Example: Check injuries for a specific team
+injuries = await get_nfl_injuries()
+team_injuries = [i for i in injuries if i["team"] == "Kansas City Chiefs"]
+```
+
+## Data Structure Examples
+
+### NFL Injuries Response
+```json
+[
+  {
+    "team": "Kansas City Chiefs",
+    "injuries": [
+      {
+        "player": "Patrick Mahomes",
+        "position": "QB",
+        "injury": "Ankle",
+        "status": "Questionable",
+        "date": "2024-01-15"
+      }
+    ]
+  }
+]
+```
+
+### Player Ratings Response
+```json
+[
+  {
+    "name": "Patrick Mahomes",
+    "position": "QB",
+    "team": "Kansas City Chiefs",
+    "overall": 95,
+    "source": "Madden NFL"
+  }
+]
+```
 
 ## Development
 
 ### Adding New Data Sources
 1. Create a new scraper in `app/scraper/`
-2. Add corresponding cache logic if needed
-3. Create a resource wrapper in `app/resources/`
-4. Add the tool/resource to `app/server.py`
-5. Write tests in `tests/`
+2. Add cache functions in `app/cache/cache.py`
+3. Create a resource module in `app/resources/`
+4. Add tools to `app/server.py`
+5. Write comprehensive tests
 
-### Adding New Fantasy Football Tools/Resources
-1. Define the tool using `@mcp.tool()` decorator in `app/server.py`
-2. Implement the logic using existing modules
-3. Add comprehensive tests
-4. Update this README with new tool documentation
+### Adding New Tools
+1. Define the tool function in `app/server.py`
+2. Add appropriate logging and error handling
+3. Write tests for the new functionality
+4. Update documentation
+
+## Future Enhancements
 
 ### Planned Features
-- Player rankings and ADP data
-- Statistical projections and analysis
-- Draft strategy tools
-- Team depth charts
-- Player news and updates
-- Trade value calculators
-- Waiver wire recommendations
+- **ADP (Average Draft Position) Data**: Integration with fantasy football platforms
+- **Player Statistics**: Historical and current season stats
+- **Draft Strategy Tools**: AI-powered draft recommendations
+- **League-Specific Analysis**: Custom scoring system support
+- **Real-Time Updates**: WebSocket-based live data updates
+- **Additional Data Sources**: PFF, FantasyPros, NFL.com integration
 
-## Dependencies
+### Data Sources to Add
+- **FantasyPros**: ADP and expert rankings
+- **Pro Football Focus**: Advanced analytics and grades
+- **NFL.com**: Official statistics and news
+- **ESPN Fantasy**: Fantasy-specific data and projections
 
-### Core Dependencies
-- `fastmcp`: MCP server framework
-- `httpx`: HTTP client for web scraping
-- `beautifulsoup4`: HTML parsing
-- `fastapi`: Web framework (used by FastMCP)
-- `uvicorn`: ASGI server
+## Error Handling & Logging
 
-### Development Dependencies
-- `pytest`: Testing framework
+The server includes comprehensive error handling and logging:
+- **Network Errors**: Graceful handling of HTTP request failures
+- **Parsing Errors**: Robust HTML parsing with fallback mechanisms
+- **Cache Errors**: File system error handling for cache operations
+- **Logging**: Structured logging for debugging and monitoring
 
-## Caching Strategy
+## Cache Management
 
 - **Location**: `/tmp/pigskin-pickem-cache/`
-- **TTL**: Configurable per data source (24 hours for injuries)
-- **Persistence**: Survives between Claude Desktop sessions
-- **Fallback**: Fresh data fetch if cache is expired or missing
-
-## Error Handling
-
-The server includes robust error handling for:
-- Network failures during scraping
-- Cache file corruption
-- Invalid HTML responses
-- Missing data fields
-- Rate limiting from data sources
+- **Files**: Separate cache files for each data type
+- **TTL**: Configurable time-to-live for each data source
+- **Persistence**: Cache persists between server restarts
 
 ## Contributing
 
-1. Follow the existing modular architecture
-2. Add tests for new functionality
-3. Update this README for new features
-4. Ensure all tests pass before submitting
-5. Focus on fantasy football relevance and utility
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
 
 ## License
 
@@ -246,4 +279,7 @@ The server includes robust error handling for:
 
 ## Support
 
-For issues or questions, please [create an issue](link-to-issues) or contact [your contact information].
+For issues and questions:
+- Create an issue in the repository
+- Check the documentation
+- Review the test examples
