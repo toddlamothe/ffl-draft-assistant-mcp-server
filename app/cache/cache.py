@@ -3,7 +3,7 @@ import json
 import time
 from typing import Any, Optional
 
-CACHE_DIR = os.path.join(os.path.dirname(__file__), "data")
+CACHE_DIR = "/tmp/pigskin-pickem-cache"
 CACHE_FILE = os.path.join(CACHE_DIR, "nfl_injuries.json")
 CACHE_TTL = 60 * 60 * 24  # 24 hours
 

@@ -1,13 +1,18 @@
-from fastapi import FastAPI
-from app.resources.nfl_injuries_resource import get_all_injuries
+from fastmcp import FastMCP, Context
+from app.scraper.nfl_injuries import fetch_nfl_injuries
+from app.cache.cache import get_cache, set_cache
+from typing import List, Dict
 
-app = FastAPI()
+mcp = FastMCP("NFLInjuryServer")
 
-@app.get("/nfl/injuries", tags=["resources"])
-def nfl_injuries():
-    """Fetch all NFL injuries (cached, refreshed every 24h)."""
-    return get_all_injuries()
+@mcp.tool()
+async def get_nfl_injuries(ctx: Context) -> List[Dict]:
+    """Get the latest NFL injuries (cached, refreshed every 24h)."""
+    injuries = get_cache()
+    if injuries is None:
+        injuries = fetch_nfl_injuries()
+        set_cache(injuries)
+    return injuries
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app.server:app", host="127.0.0.1", port=8000, reload=True)
+    mcp.run()
