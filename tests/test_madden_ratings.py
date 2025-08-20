@@ -39,13 +39,28 @@ MOCK_HTML = '''
 </tr>
 '''
 
+EMPTY_PAGE_HTML = """<table></table>"""
+
 @patch("httpx.get")
 def test_fetch_madden_ratings(mock_get):
     """Test fetching Madden ratings from the website."""
-    mock_response = Mock()
-    mock_response.status_code = 200
-    mock_response.text = MOCK_HTML
-    mock_get.return_value = mock_response
+    def side_effect(url, timeout):
+        # Return the mock data for the base page, empty for any pagination
+        if url.endswith("ratings") and "page=" not in url:
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_response.text = MOCK_HTML
+            mock_response.raise_for_status = Mock()
+            return mock_response
+        else:
+            # Return empty page for any pagination attempts
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_response.text = EMPTY_PAGE_HTML
+            mock_response.raise_for_status = Mock()
+            return mock_response
+    
+    mock_get.side_effect = side_effect
     
     ratings = fetch_madden_ratings()
     
@@ -62,8 +77,9 @@ def test_fetch_madden_ratings_http_error(mock_get):
     """Test handling of HTTP errors."""
     mock_get.side_effect = Exception("Network error")
     
-    with pytest.raises(Exception):
-        fetch_madden_ratings()
+    # With pagination, errors are caught and return empty results
+    ratings = fetch_madden_ratings()
+    assert ratings == []
 
 def test_extract_player_data():
     """Test extracting player data from a table row."""
