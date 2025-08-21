@@ -11,7 +11,7 @@ This MCP server is designed to be integrated with Claude Desktop, providing real
 ### `get_nfl_injuries`
 - **Type**: Tool
 - **Description**: Retrieves the latest NFL injuries data, using cached data if available (refreshed every 24 hours)
-- **Returns**: List of injury reports by team with player details, injury status, and dates
+- **Returns**: List of injury reports by team with player details, estimated return dates, status, and status updates
 - **Data Source**: ESPN NFL Injuries Page
 
 ### `get_player_ratings`
@@ -229,9 +229,9 @@ team_injuries = [i for i in injuries if i["team"] == "Kansas City Chiefs"]
       {
         "player": "Patrick Mahomes",
         "position": "QB",
-        "injury": "Ankle",
+        "estimated_return_date": "Sep 7",
         "status": "Questionable",
-        "date": "2024-01-15"
+        "status_update": "Aug 18: Cardinals head coach Jonathan Gannon said Monday that Conner (knee) will 'miss some time,' Darren Urban of the Cardinals' official site reports."
       }
     ]
   }

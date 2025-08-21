@@ -19,12 +19,12 @@ def fetch_nfl_injuries() -> List[Dict]:
             for row in team_section.select("tbody tr"):
                 cols = [td.text.strip() for td in row.find_all("td")]
                 if len(cols) >= 5:
-                    player, pos, injury, status, estimated_return = cols[:5]
+                    player, pos, estimated_return_date, status, status_update = cols[:5]
                     current_team["injuries"].append({
                         "player": player,
                         "position": pos,
-                        "injury": injury,
+                        "estimated_return_date": estimated_return_date,
                         "status": status,
-                        "estimated_return": estimated_return
+                        "status_update": status_update
                     })
     return teams
