@@ -7,6 +7,7 @@ This script tests the underlying functions that the MCP server uses.
 import asyncio
 import json
 import logging
+import pytest
 from app.scraper.nfl_injuries import fetch_nfl_injuries
 from app.cache.cache import get_cache, set_cache
 from app.resources.player_ratings_resource import (
@@ -20,6 +21,7 @@ from app.resources.player_ratings_resource import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+@pytest.mark.asyncio
 async def test_mcp_functions():
     """Test all the functions that the MCP server uses."""
     
