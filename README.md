@@ -131,6 +131,38 @@ Add the following to your `claude_desktop_config.json`:
 }
 ```
 
+### MCP Inspector Testing
+To test your MCP server using the official MCP Inspector tool:
+
+1. **Install the MCP Inspector** (if not already installed):
+   ```bash
+   npm install -g @modelcontextprotocol/inspector
+   ```
+
+2. **Launch the Inspector** from the project root:
+   ```bash
+   npx @modelcontextprotocol/inspector /Users/todd/code/pigskin-pickem/v5/venv/bin/python -m app.server
+   ```
+
+3. **Alternative: Use the wrapper script** (recommended for better compatibility):
+   ```bash
+   npx @modelcontextprotocol/inspector
+   ```
+   Then in the web interface, configure:
+   - **Command:** `python`
+   - **Arguments:** `mcp_server_wrapper.py`
+   - **Working Directory:** `/Users/todd/code/pigskin-pickem/v5`
+   - **Environment Variables:** `PYTHONPATH=.`
+
+The MCP Inspector provides a web-based interface for testing all your fantasy football tools interactively, including:
+- `get_nfl_injuries()`
+- `get_player_ratings()`
+- `get_player_ratings_by_source(source)`
+- `get_player_ratings_by_position(position)`
+- `get_player_ratings_by_team(team)`
+
+For detailed instructions, see `MCP_INSPECTOR_GUIDE.md`.
+
 ## Running Tests
 
 ### Run all tests:

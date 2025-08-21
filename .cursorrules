@@ -1,0 +1,18 @@
+# Cursor Rules for Fantasy Football MCP Server
+
+# MCP Server Configuration
+# This project includes a custom MCP server for fantasy football data
+# The server provides tools for NFL injuries and player ratings
+
+# Testing Instructions:
+# 1. Ensure your virtual environment is activated
+# 2. Run the MCP server: python app/server.py
+# 3. In Cursor, use the MCP extension to connect to the server
+# 4. Test tools like get_nfl_injuries() and get_player_ratings()
+
+# Available MCP Tools:
+# - get_nfl_injuries(): Get latest NFL injuries (cached, refreshed every 24h)
+# - get_player_ratings(): Get all player ratings from multiple sources
+# - get_player_ratings_by_source(source): Get ratings from specific source
+# - get_player_ratings_by_position(position): Filter by position (QB, RB, WR, etc.)
+# - get_player_ratings_by_team(team): Filter by team name

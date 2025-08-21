@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "fantasy-football-assistant": {
+      "command": "./start_mcp_server.sh",
+      "env": {
+        "PYTHONPATH": "."
+      }
+    }
+  }
+}
