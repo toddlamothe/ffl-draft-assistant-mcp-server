@@ -3,9 +3,9 @@ from app.scraper.nfl_injuries import fetch_nfl_injuries
 from app.cache.cache import get_cache, set_cache
 from app.resources.player_ratings_resource import (
     get_all_player_ratings, 
-    get_player_ratings_by_source,
-    get_player_ratings_by_position,
-    get_player_ratings_by_team
+    get_player_ratings_by_source as get_ratings_by_source,
+    get_player_ratings_by_position as get_ratings_by_position,
+    get_player_ratings_by_team as get_ratings_by_team
 )
 from typing import List, Dict
 import logging
@@ -39,19 +39,19 @@ async def get_player_ratings(ctx: Context) -> List[Dict]:
 async def get_player_ratings_by_source(ctx: Context, source: str) -> List[Dict]:
     """Get player ratings from a specific source (e.g., 'Madden NFL')."""
     logger.info(f"Tool called: get_player_ratings_by_source with source={source}")
-    return get_player_ratings_by_source(source)
+    return get_ratings_by_source(source)
 
 @mcp.tool()
 async def get_player_ratings_by_position(ctx: Context, position: str) -> List[Dict]:
     """Get player ratings filtered by position (e.g., 'QB', 'RB', 'WR', 'TE', 'K', 'DEF')."""
     logger.info(f"Tool called: get_player_ratings_by_position with position={position}")
-    return get_player_ratings_by_position(position)
+    return get_ratings_by_position(position)
 
 @mcp.tool()
 async def get_player_ratings_by_team(ctx: Context, team: str) -> List[Dict]:
     """Get player ratings filtered by team name."""
     logger.info(f"Tool called: get_player_ratings_by_team with team={team}")
-    return get_player_ratings_by_team(team)
+    return get_ratings_by_team(team)
 
 def parse_arguments():
     """Parse command line arguments, ignoring unknown ones that MCP inspector might pass."""
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         logger.info("Verbose logging enabled")
     
     logger.info("Starting Fantasy Football MCP Server...")
-    logger.info(f"Available tools: {list(mcp.tools.keys())}")
+    logger.info("Available tools: get_nfl_injuries, get_player_ratings, get_player_ratings_by_source, get_player_ratings_by_position, get_player_ratings_by_team")
     
     # Run the MCP server
     mcp.run()

@@ -31,6 +31,7 @@ This MCP server is designed to be integrated with Claude Desktop, providing real
 - **Description**: Filters player ratings by position (e.g., 'QB', 'RB', 'WR', 'TE', 'K', 'DEF')
 - **Parameters**: `position` (string) - The position to filter by
 - **Returns**: Filtered list of player ratings for the specified position
+- **Example**: `get_player_ratings_by_position("QB")` returns 107 QB players
 
 ### `get_player_ratings_by_team`
 - **Type**: Tool
