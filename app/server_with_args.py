@@ -6,7 +6,6 @@ from app.resources.player_ratings_resource import (
     get_player_ratings_by_source,
     get_player_ratings_by_position,
     get_player_ratings_by_team,
-    get_player_by_name,
     get_player_ratings_stats
 )
 from app.resources.ol_rankings_resource import (
@@ -73,16 +72,7 @@ async def get_player_ratings_by_team(ctx: Context, team: str) -> List[Dict]:
     logger.info(f"Player ratings by team '{team}': served {len(ratings)} players")
     return ratings
 
-@mcp.tool()
-async def get_player_by_name(ctx: Context, player_name: str) -> Dict:
-    """Get ratings for a specific player by name with ratings from all available sources."""
-    logger.info(f"Tool called: get_player_by_name with player_name={player_name}")
-    player = get_player_by_name(player_name)
-    if player:
-        logger.info(f"Player '{player_name}': found with {len(player.get('ratings', []))} rating sources")
-    else:
-        logger.info(f"Player '{player_name}': player not found")
-    return player or {"error": f"Player '{player_name}' not found"}
+
 
 @mcp.tool()
 async def get_player_ratings_stats(ctx: Context) -> Dict:
@@ -162,7 +152,7 @@ if __name__ == "__main__":
         logger.info("Verbose logging enabled")
     
     logger.info("Starting Fantasy Football MCP Server...")
-    logger.info("Available tools: get_nfl_injuries, get_player_ratings, get_player_ratings_by_source, get_player_ratings_by_position, get_player_ratings_by_team, get_player_by_name, get_player_ratings_stats, get_ol_rankings, get_ol_rankings_by_team, get_top_ol_rankings, get_ol_rankings_by_rank_range, get_ol_rankings_stats")
+    logger.info("Available tools: get_nfl_injuries, get_player_ratings, get_player_ratings_by_source, get_player_ratings_by_position, get_player_ratings_by_team, get_player_ratings_stats, get_ol_rankings, get_ol_rankings_by_team, get_top_ol_rankings, get_ol_rankings_by_rank_range, get_ol_rankings_stats")
     
     # Run the MCP server
     mcp.run()

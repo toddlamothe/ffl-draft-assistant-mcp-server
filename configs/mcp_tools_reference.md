@@ -85,19 +85,13 @@
 **Use Case**: Source-specific analysis
 **Example**: `get_player_ratings_by_source("Madden NFL")`
 
-### 6. `get_player_by_name(player_name)`
-**Purpose**: Get ratings for a specific player by name with ratings from all available sources
-**Parameters**: `player_name` (string) - Player name
-**Use Case**: Individual player analysis with multiple rating sources
-**Example**: `get_player_by_name("Patrick Mahomes")`
-
-### 7. `get_player_ratings_stats()`
+### 6. `get_player_ratings_stats()`
 **Purpose**: Get statistics about the combined player ratings dataset (Madden + PFF)
 **Returns**: Dataset statistics and coverage information
 **Use Case**: Understanding data coverage and quality
 **Example**: `get_player_ratings_stats()`
 
-### 8. `get_ol_rankings()`
+### 7. `get_ol_rankings()`
 **Purpose**: Get all PFF offensive line rankings
 **Returns**: Complete list of team OL rankings
 **Use Case**: Offensive line analysis for RB/QB evaluation
@@ -121,19 +115,19 @@
 ]
 ```
 
-### 9. `get_ol_rankings_by_team(team)`
+### 8. `get_ol_rankings_by_team(team)`
 **Purpose**: Get offensive line ranking for specific team
 **Parameters**: `team` (string) - Team name
 **Use Case**: Team-specific OL analysis
 **Example**: `get_ol_rankings_by_team("Philadelphia Eagles")`
 
-### 10. `get_top_ol_rankings(top_n)`
+### 9. `get_top_ol_rankings(top_n)`
 **Purpose**: Get top N offensive line rankings
 **Parameters**: `top_n` (int) - Number of top teams to return
 **Use Case**: Identify teams with best offensive lines
 **Example**: `get_top_ol_rankings(10)`
 
-### 11. `get_ol_rankings_by_rank_range(min_rank, max_rank)`
+### 10. `get_ol_rankings_by_rank_range(min_rank, max_rank)`
 **Purpose**: Get OL rankings within specific rank range
 **Parameters**: 
 - `min_rank` (int) - Minimum rank
@@ -141,7 +135,7 @@
 **Use Case**: Find teams with OL in specific tier
 **Example**: `get_ol_rankings_by_rank_range(1, 10)`
 
-### 12. `get_ol_rankings_stats()`
+### 11. `get_ol_rankings_stats()`
 **Purpose**: Get statistics about OL rankings dataset
 **Returns**: Dataset statistics and distribution
 **Use Case**: Understanding OL ranking coverage
@@ -215,12 +209,11 @@
 ```
 1. User asks: "Should I draft Christian McCaffrey?"
 2. Use get_player_ratings_by_position("RB") to see RB landscape with all ratings
-3. Use get_player_by_name("Christian McCaffrey") to get specific player data
-4. Use get_player_ratings_by_team("San Francisco 49ers") for team context
-5. Use get_ol_rankings_by_team("San Francisco 49ers") for OL analysis
-6. Use get_nfl_injuries() to check for 49ers OL injuries
-7. Combine Madden ratings + PFF grades + OL quality + injury data
-8. Provide PPR-specific recommendation
+3. Use get_player_ratings_by_team("SF") for team context and find McCaffrey
+4. Use get_ol_rankings_by_team("San Francisco 49ers") for OL analysis
+5. Use get_nfl_injuries() to check for 49ers OL injuries
+6. Combine Madden ratings + PFF grades + OL quality + injury data
+7. Provide PPR-specific recommendation
 ```
 
 ## Data Coverage

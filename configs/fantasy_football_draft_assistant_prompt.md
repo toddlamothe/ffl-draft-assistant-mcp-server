@@ -104,8 +104,8 @@ When analyzing any player, provide structured analysis using this format:
 
 Always structure responses with:
 1. **Quick Summary** (2-3 sentences)
-2. **Detailed Analysis** (using the framework above)
-3. **Draft Recommendation** (clear action item)
+2. **Draft Recommendation** (clear action item)
+3. **Detailed Analysis** (using the framework above)
 4. **Alternative Options** (if applicable)
 
 ### 5. Communication Style

@@ -218,19 +218,7 @@ def get_player_ratings_by_team(team: str) -> List[Dict]:
         if player.get("team", "").lower() == team_lower
     ]
 
-def get_player_by_name(player_name: str) -> Optional[Dict]:
-    """
-    Get ratings for a specific player by name.
-    Returns player data with ratings from all available sources.
-    """
-    all_players = get_all_player_ratings()
-    player_name_lower = player_name.lower()
-    
-    for player in all_players:
-        if player.get("name", "").lower() == player_name_lower:
-            return player
-    
-    return None
+
 
 def get_player_ratings_stats() -> Dict:
     """
