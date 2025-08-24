@@ -3,9 +3,9 @@ from app.scraper.nfl_injuries import fetch_nfl_injuries
 from app.cache.cache import get_cache, set_cache
 from app.resources.player_ratings_resource import (
     get_all_player_ratings, 
-    get_player_ratings_by_source,
-    get_player_ratings_by_position,
-    get_player_ratings_by_team,
+    get_player_ratings_by_source as get_ratings_by_source,
+    get_player_ratings_by_position as get_ratings_by_position,
+    get_player_ratings_by_team as get_ratings_by_team,
     get_player_ratings_stats
 )
 from app.resources.ol_rankings_resource import (
@@ -52,7 +52,7 @@ async def get_player_ratings(ctx: Context) -> List[Dict]:
 async def get_player_ratings_by_source(ctx: Context, source: str) -> List[Dict]:
     """Get player ratings from a specific source (e.g., 'Madden NFL', 'Pro Football Focus')."""
     logger.info(f"Tool called: get_player_ratings_by_source with source={source}")
-    ratings = get_player_ratings_by_source(source)
+    ratings = get_ratings_by_source(source)
     logger.info(f"Player ratings by source '{source}': served {len(ratings)} players")
     return ratings
 
@@ -60,7 +60,7 @@ async def get_player_ratings_by_source(ctx: Context, source: str) -> List[Dict]:
 async def get_player_ratings_by_position(ctx: Context, position: str) -> List[Dict]:
     """Get player ratings filtered by position (e.g., 'QB', 'RB', 'WR', 'TE', 'K', 'DEF') with ratings from all sources."""
     logger.info(f"Tool called: get_player_ratings_by_position with position={position}")
-    ratings = get_player_ratings_by_position(position)
+    ratings = get_ratings_by_position(position)
     logger.info(f"Player ratings by position '{position}': served {len(ratings)} players")
     return ratings
 
@@ -68,7 +68,7 @@ async def get_player_ratings_by_position(ctx: Context, position: str) -> List[Di
 async def get_player_ratings_by_team(ctx: Context, team: str) -> List[Dict]:
     """Get player ratings filtered by team name with ratings from all sources."""
     logger.info(f"Tool called: get_player_ratings_by_team with team={team}")
-    ratings = get_player_ratings_by_team(team)
+    ratings = get_ratings_by_team(team)
     logger.info(f"Player ratings by team '{team}': served {len(ratings)} players")
     return ratings
 

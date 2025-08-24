@@ -80,27 +80,37 @@ def normalize_player_name(name: str) -> str:
     name = name.replace("'", "").replace("'", "")  # Handle apostrophes
     return name
 
+def create_player_key(name: str, position: str) -> str:
+    """Create a unique key for a player using name and position."""
+    normalized_name = normalize_player_name(name)
+    normalized_position = position.upper().strip()
+    return f"{normalized_name}|{normalized_position}"
+
 def match_players_by_name(madden_players: List[Dict], pff_players: List[Dict]) -> Dict[str, Dict]:
-    """Create a mapping of normalized names to player data from both sources."""
+    """Create a mapping of player keys (name+position) to player data from both sources."""
     player_map = {}
     
     # Add Madden players
     for player in madden_players:
-        normalized_name = normalize_player_name(player.get("name", ""))
-        if normalized_name:
-            if normalized_name not in player_map:
-                player_map[normalized_name] = {"madden": player, "pff": None}
+        name = player.get("name", "")
+        position = player.get("position", "")
+        player_key = create_player_key(name, position)
+        if player_key:
+            if player_key not in player_map:
+                player_map[player_key] = {"madden": player, "pff": None}
             else:
-                player_map[normalized_name]["madden"] = player
+                player_map[player_key]["madden"] = player
     
     # Add PFF players
     for player in pff_players:
-        normalized_name = normalize_player_name(player.get("name", ""))
-        if normalized_name:
-            if normalized_name not in player_map:
-                player_map[normalized_name] = {"madden": None, "pff": player}
+        name = player.get("name", "")
+        position = player.get("position", "")
+        player_key = create_player_key(name, position)
+        if player_key:
+            if player_key not in player_map:
+                player_map[player_key] = {"madden": None, "pff": player}
             else:
-                player_map[normalized_name]["pff"] = player
+                player_map[player_key]["pff"] = player
     
     return player_map
 
